@@ -1,0 +1,8 @@
+# Node modules folder
+node_modules/
+
+# Environment variables (API keys, DB passwords, JWT secrets, etc.)
+.env
+
+# Logs
+logs
