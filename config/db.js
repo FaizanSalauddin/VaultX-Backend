@@ -1,17 +1,25 @@
-// config/db.js
 import mongoose from "mongoose";
-let isConnected = false;
 
-const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(process.env.MONGO_URL
-            ,
-            { dbName: "Password_Manager" }
-        ).then(() => console.log("Mongo DB connected..."))
-            .catch((err) => console.log(err));
-    } catch (error) {
-        console.log(error);
-    }
+let isConnected = false; // track connection status
+
+// Function to connect with MongoDB
+export const connectDB = async () => {
+  if (isConnected) {
+    console.log("MongoDB already connected ✅");
+    return;
+  }
+
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URL, {
+      dbName: "Password_Manager",
+    });
+
+    isConnected = true;
+    console.log("MongoDB Connected Successfully ✅");
+  } catch (error) {
+    console.error("❌ MongoDB Connection Error:", error.message);
+  }
 };
 
-export default {connectDB,isConnected};
+// Export connection state (for checking)
+export { isConnected };

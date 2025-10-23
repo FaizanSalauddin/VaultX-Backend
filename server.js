@@ -1,37 +1,34 @@
-import express from 'express'
-import mongoose from "mongoose";
-import bodyParser from 'express';
-import { config } from "dotenv";
-import { connectDB, isConnected } from './config/db.js'
-import userRoutes from './routes/userRoutes.js'
-import passwordRoutes from './routes/passwordRoutes.js'
+import express from 'express';
+import cors from 'cors';
+import { config } from 'dotenv';
+import { connectDB, isConnected } from './config/db.js';
+import userRoutes from './routes/userRoutes.js';
+import passwordRoutes from './routes/passwordRoutes.js';
 import { isAuthenticated } from './middleware/Auth.js';
-import cors from 'cors'
-let app = express();
 
-app.use(bodyParser.json());
-// .env setup
-config({ path: '.env' })
+const app = express();
 
-app.use((req, res, next) => {
-    if (!isConnected) {
-        connectDB();
-    }
-    next();
-})
+// Load environment variables
+config({ path: '.env' });
 
+// Middleware
+app.use(express.json());
 app.use(cors({
-    origin: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
-}))
-// app.listen(process.env.PORT, () =>
-//     console.log(`Server is running on http://localhost:${process.env.PORT}/`)
-// );
+  origin: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
-//Routes
+// Connect to MongoDB (only once)
+app.use(async (req, res, next) => {
+  if (!isConnected) {
+    await connectDB();
+  }
+  next();
+});
 
-app.use('/api/auth', userRoutes)
-app.use('/api/pass', isAuthenticated, passwordRoutes)
+// Routes
+app.use('/api/auth', userRoutes);
+app.use('/api/pass', isAuthenticated, passwordRoutes);
 
 export default app;
