@@ -14,10 +14,11 @@ config({ path: '.env' });
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: true,
+  origin: "https://vault-x-frontend-kappa.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
+
 
 // Connect to MongoDB (only once)
 app.use(async (req, res, next) => {
